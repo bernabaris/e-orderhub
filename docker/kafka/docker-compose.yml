@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+    container_name: zookeeper
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - 9092:9092
+    container_name: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "cms.entity.change:1:1" # topic:partition:replicas
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - "zookeeper"

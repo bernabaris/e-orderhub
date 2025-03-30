@@ -10,6 +10,9 @@ public class Converter {
         if( user.getId() != null ) {
             userEntity.setId(user.getId());
         }
+        if(user.getUsername() != null) {
+            userEntity.setUsername(user.getUsername());
+        }
         if( user.getEmail() != null ) {
             userEntity.setEmail(user.getEmail());
         }

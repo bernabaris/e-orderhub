@@ -46,6 +46,7 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(updatable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
