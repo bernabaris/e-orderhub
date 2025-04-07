@@ -1,11 +1,14 @@
 package com.github.bernabaris.orderservice.service;
 
 import com.github.bernabaris.common.model.Order;
+import com.github.bernabaris.orderservice.config.KafkaProducer;
 import com.github.bernabaris.orderservice.entity.OrderEntity;
 
 import com.github.bernabaris.orderservice.repository.OrderRepository;
 import com.github.bernabaris.orderservice.util.Converter;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +17,22 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private OrderRepository orderRepository;
+    private KafkaProducer kafkaProducer;
+    private final Gson gson = new Gson();
+
+    @Value("${spring.kafka.topic.order}")
+    private String orderTopic;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
+        this.kafkaProducer = kafkaProducer;
     }
 
     public Order createOrder(Order order) {
         OrderEntity orderEntity = Converter.convertOrderToEntity(order);
         OrderEntity savedOrder = orderRepository.save(orderEntity);
+        kafkaProducer.sendMessage(orderTopic,gson.toJson(savedOrder));
         return Converter.convertEntityToOrder(savedOrder);
     }
 
