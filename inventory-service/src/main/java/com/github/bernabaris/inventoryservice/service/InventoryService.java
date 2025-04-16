@@ -1,6 +1,7 @@
 package com.github.bernabaris.inventoryservice.service;
 
 import com.github.bernabaris.common.model.Order;
+import com.github.bernabaris.common.util.GsonUtil;
 import com.github.bernabaris.inventoryservice.entity.ProductEntity;
 import com.github.bernabaris.inventoryservice.repository.ProductRepository;
 import com.google.gson.Gson;
@@ -14,12 +15,11 @@ import org.springframework.stereotype.Service;
 public class InventoryService {
 
     private final ProductRepository productRepository;
-    private final Gson gson;
+    private final Gson gson = GsonUtil.getGson();
 
     @Autowired
-    public InventoryService(ProductRepository productRepository, Gson gson) {
+    public InventoryService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.gson = gson;
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.order}", groupId = "inventory-service-group")
@@ -27,7 +27,7 @@ public class InventoryService {
         try {
             log.info("Received order: {}", message);
             Order order = gson.fromJson(message, Order.class);
-
+            log.info("Product ID in order: {}", order.getProductId());
 
             ProductEntity product = productRepository.findById(order.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -44,4 +44,5 @@ public class InventoryService {
             log.error("Error processing order message: {}", message, e);
         }
     }
+
 }

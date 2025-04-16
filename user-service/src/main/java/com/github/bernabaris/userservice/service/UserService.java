@@ -21,6 +21,9 @@ public class UserService {
         if (userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Username or email address already in use");
         }
+        if(user.getUsername() == null || user.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserEntity userEntity = Converter.convertUserToUserEntity(user);
         UserEntity savedUser = userRepository.save(userEntity);
@@ -46,6 +49,22 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public User loginUser(String email, String rawPassword) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(email);
+
+        if (userEntityOptional.isEmpty()) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        UserEntity userEntity = userEntityOptional.get();
+
+        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        return Converter.convertUserEntityToUser(userEntity);
     }
 
 

@@ -1,7 +1,8 @@
 package com.github.bernabaris.orderservice;
 
-import com.github.bernabaris.orderservice.entity.OrderStatus;
-import com.github.bernabaris.orderservice.model.Order;
+
+import com.github.bernabaris.common.model.Order;
+import com.github.bernabaris.common.model.OrderStatus;
 import com.github.bernabaris.orderservice.repository.OrderRepository;
 import com.github.bernabaris.orderservice.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;

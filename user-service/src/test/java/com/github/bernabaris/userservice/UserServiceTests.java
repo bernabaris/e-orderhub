@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,60 +33,71 @@ class UserServiceTests {
 
 	private User testUser;
 
+
 	@BeforeEach
 	void setUp() {
-		testUser = User.builder()
-				.username("testuser")
-				.email("test@example.com")
-				.password("securePassword")
-				.role(Role.USER)
-				.build();
+		testUser = new User();
+		testUser.setUsername("test");
+		testUser.setEmail("test@test.com");
+		testUser.setPassword(passwordEncoder.encode("test"));
+		testUser.setRole(Role.USER);
 	}
 
 	@Test
-	void shouldRegisterUserSuccessfully() {
-		User registeredUser = userService.registerUser(testUser);
-		assertThat(registeredUser).isNotNull();
-		assertThat(registeredUser.getId()).isNotNull();
-		assertThat(userRepository.existsByUsername("testuser")).isTrue();
+	void shouldRegisterUser() {
+		User user = userService.registerUser(testUser);
+		assert user != null;
+		assert user.getUsername().equals(testUser.getUsername());
+		assert user.getEmail().equals(testUser.getEmail());
+		assert user.getPassword().equals(testUser.getPassword());
+		assert user.getRole().equals(Role.USER);
 	}
 
 	@Test
-	void shouldNotRegisterUserWithExistingEmail() {
-		userService.registerUser(testUser);
+	void shouldNotRegisterUserIfEmailAlreadyExists() {
+		User user = userService.registerUser(testUser);
+		User duplicatedUser = new User();
+		duplicatedUser.setUsername("test2");
+		duplicatedUser.setEmail("test@test.com");
+		duplicatedUser.setPassword(passwordEncoder.encode("test"));
+		duplicatedUser.setRole(Role.USER);
 
-		User duplicateUser = User.builder()
-				.username("newuser")
-				.email("test@example.com") // same email
-				.password("securePassword2")
-				.role(Role.USER)
-				.build();
+		assertThrows(IllegalArgumentException.class, () -> userService.registerUser(duplicatedUser));
+	}
 
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(duplicateUser));
-		assertThat(exception.getMessage()).isEqualTo("Username or email address already in use");
+	@Test
+	void shouldNotRegisterUsernameIsEmpty() {
+		testUser.setUsername("");
+		assertThrows(IllegalArgumentException.class, () -> userService.registerUser(testUser));
 	}
 
 	@Test
 	void shouldRetrieveUserByUsername() {
-		User registeredUser = userService.registerUser(testUser);
-		assertThat(userService.getUserByUsername("testuser")).isPresent();
+		User user = userService.registerUser(testUser);
+		Optional<User> registeredUser = userService.getUserByUsername(user.getUsername());
+		assert registeredUser.isPresent();
+		assertThat(registeredUser.get()).isEqualTo(user);
 	}
 
 	@Test
-	void shouldRetrieveUserByEmail() {
-		User registeredUser = userService.registerUser(testUser);
-		assertThat(userService.getUserByEmail("test@example.com")).isPresent();
+	void shouldRetrieveUserByEmail(){
+		User user = userService.registerUser(testUser);
+		Optional<User> registeredUser = userService.getUserByEmail(user.getEmail());
+		assert registeredUser.isPresent();
+		assertThat(registeredUser.get()).isEqualTo(user);
 	}
 
 	@Test
-	void shouldReturnFalseIfUsernameNotExists() {
+	void shouldReturnFalseIfUsernameNotExists(){
 		assertThat(userService.existsByUsername("nonexistentuser")).isFalse();
 	}
 
 	@Test
-	void shouldReturnFalseIfEmailNotExists() {
+	void shouldReturnFalseIfEmailNotExists(){
 		assertThat(userService.existsByEmail("nonexistent@example.com")).isFalse();
 	}
+
+
 
 
 

@@ -33,6 +33,7 @@ public class Converter {
         order.setProductId(orderEntity.getProductId());
         order.setQuantity(orderEntity.getQuantity());
         order.setStatus(orderEntity.getStatus());
+        order.setOrderDate(orderEntity.getOrderDate());
         return order;
     }
 
@@ -42,6 +43,7 @@ public class Converter {
         orderEntity.setProductId(order.getProductId());
         orderEntity.setQuantity(order.getQuantity());
         orderEntity.setStatus(order.getStatus());
+        orderEntity.setOrderDate(order.getOrderDate());
         return orderEntity;
     }
 

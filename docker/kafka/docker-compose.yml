@@ -1,22 +1,26 @@
-version: '3.3'
+version: '3.8'
 services:
-  zookeeper:
-    image: wurstmeister/zookeeper
-    ports:
-      - 2181:2181
-    container_name: zookeeper
-
   kafka:
-    image: wurstmeister/kafka
-    ports:
-      - 9092:9092
+    image: bitnami/kafka:4.0.0-debian-12-r2
     container_name: kafka
+    ports:
+      - "9092:9092"
     environment:
-      KAFKA_CREATE_TOPICS: "cms.entity.change:1:1" # topic:partition:replicas
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_PORT: 9092
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - "zookeeper"
+      - kafka_data:/bitnami/kafka
+    networks:
+      - shared-network
+
+volumes:
+  kafka_data:
+
+networks:
+  shared-network:
+    external: true

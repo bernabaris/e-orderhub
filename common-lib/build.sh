@@ -1,0 +1,1 @@
+docker build -t common-lib:1.0.0 .

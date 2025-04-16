@@ -49,4 +49,15 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) {
+        try {
+            Order order = orderService.getOrderById(id);
+            OrderDto orderDto = Converter.convertOrderToDto(order);
+            return ResponseEntity.ok(orderDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

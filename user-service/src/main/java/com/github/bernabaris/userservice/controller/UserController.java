@@ -1,5 +1,7 @@
 package com.github.bernabaris.userservice.controller;
 
+import com.github.bernabaris.userservice.dto.LoginRequestDto;
+import com.github.bernabaris.userservice.dto.LoginResponseDto;
 import com.github.bernabaris.userservice.dto.UserDto;
 import com.github.bernabaris.userservice.model.User;
 import com.github.bernabaris.userservice.service.UserService;
@@ -69,6 +71,16 @@ public class UserController {
     public ResponseEntity<Boolean> existsByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(value -> ResponseEntity.ok(user.isPresent())).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
+        try {
+            User user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(new LoginResponseDto("Login successful", user.getUsername()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
 }
