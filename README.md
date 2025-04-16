@@ -27,7 +27,7 @@ Each service is Dockerized and communicates over REST and Kafka topics.
 ### 1. Clone the Repository
 
 ```bash
-  git clone https://github.com/yourusername/e-orderhub.git
+  git clone https://github.com/bernabaris/e-orderhub.git
   cd e-orderhub
 ```
 
