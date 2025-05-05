@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: "docker.io/bernabaris/user-service"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -25,3 +25,9 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
+
+database:
+  type: mariadb
+  address: mariadb:3306
+  username: root
+  password: 12345Wq!

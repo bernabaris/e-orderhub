@@ -36,14 +36,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .requestMatchers(
+                                "/api/users/register",
+                                "/api/users/login",
+                                "/actuator/health/**" // ✅ Allow unauthenticated health probes
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
-                        .maximumSessions(1)  // opsiyonel
+                        .maximumSessions(1)
                 )
-                .httpBasic(httpBasic -> {}) // veya tamamen çıkarabilirsin
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
