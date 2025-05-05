@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "spring-boot-app.fullname" . }}-config
+data:
+  application.yaml: |
+    spring:
+      datasource:
+        url: {{ .Values.spring.datasource.url }}
+        username: {{ .Values.spring.datasource.username }}
+      jpa:
+        hibernate:
+          ddl-auto: {{ .Values.spring.jpa.hibernate.ddl-auto }}
+      kafka:
+        bootstrap-servers: {{ .Values.spring.kafka.bootstrap-servers }}
+    app:
+      logLevel: {{ .Values.app.logLevel }}
+      feature:
+        featureA: {{ .Values.app.feature.featureA }}
+        featureB: {{ .Values.app.feature.featureB }}
