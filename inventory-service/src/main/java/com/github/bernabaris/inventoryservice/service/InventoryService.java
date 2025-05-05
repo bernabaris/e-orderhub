@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class InventoryService {
@@ -45,4 +47,11 @@ public class InventoryService {
         }
     }
 
+    public ProductEntity addProduct(ProductEntity product) {
+        return productRepository.save(product);
+    }
+
+    public Optional<ProductEntity> getProductById(Long productId) {
+        return productRepository.findById(productId);
+    }
 }
