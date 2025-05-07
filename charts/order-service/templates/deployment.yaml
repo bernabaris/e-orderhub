@@ -25,9 +25,19 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /actuator/health/liveness
+              port: {{ .Values.service.port }}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /actuator/health/readiness
+              port: {{ .Values.service.port }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              value: "file:/config/application.yaml"
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "order-service.fullname" . }}-config
