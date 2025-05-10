@@ -31,3 +31,8 @@ database:
   address: mariadb:3306
   username: root
   password: 12345Wq!
+
+kafka:
+  address: kafka:9092
+  topic:
+    name: order

@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: inventory-service
+
+  datasource:
+    url: jdbc:mariadb://192.168.1.51:30036/ecommerce?createDatabaseIfNotExist=true
+    username: root
+    password: 12345Wq!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+  kafka:
+    bootstrap-servers: 192.168.1.51:31727
+    topic:
+      order: order
+    consumer:
+      group-id: order
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+server:
+  port: 8083
+
+generate:
+  test:
+    data: true

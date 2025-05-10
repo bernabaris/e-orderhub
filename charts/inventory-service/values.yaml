@@ -25,3 +25,16 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
+
+database:
+  type: mariadb
+  address: mariadb:3306
+  username: root
+  password: 12345Wq!
+
+kafka:
+  address: kafka:9092
+  topic:
+    name: order
+  consumer:
+    groupid: order

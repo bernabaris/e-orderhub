@@ -1,4 +1,4 @@
-FROM common-lib:1.0.0 AS build
+FROM bernabaris/common-lib:1.0.0 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean install -DskipTests

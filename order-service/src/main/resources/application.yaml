@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://192.168.1.51:30036/ecommerce?createDatabaseIfNotExist=true
+    username: root
+    password: 12345Wq!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+  kafka:
+    bootstrap-servers: 192.168.1.51:9092
+    topic:
+      order: order
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
